@@ -1,10 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
-from art import*
-tprint("SundaXploit")
+from art import *
+
+tprint("SundaXploit V1.2")
 print("by t.me/awn_sx")
 print("github: https://github.com/AkbarWiraN")
+
 # Meminta input file list dari pengguna
 filename = input("Masukkan nama file list: ")
 
@@ -33,24 +35,28 @@ for url in urls:
     # Mengekstrak domain dari hasil reverse IP lookup
     soup = BeautifulSoup(response.content, "html.parser")
     table = soup.find("table")
-    rows = table.find_all("tr")[1:]  # melewati header tabel
 
-    domains = [row.find_all("td")[0].text.strip() for row in rows]
+    if table:
+        rows = table.find_all("tr")[1:]  # melewati header tabel
 
-    # Filter domain yang tidak diinginkan
-    exclude_keywords = ['autodiscover', 'cpanel', 'cpcalendars', 'cpcontact', 'ftp', 'mail', 'ns1', 'ns2', 'ns3', 'ns4', 'webdisk', 'webmail', 'www', 'mx1', 'mx', 'mx2']
-    domains = [domain for domain in domains if not any(keyword in domain for keyword in exclude_keywords)]
-    
-    # Filter domain yang duplikat
-    domains = list(set(domains))
+        domains = [row.find_all("td")[0].text.strip() for row in rows]
 
-    # Menyimpan hasil ke dalam file
-    if domains:
-        result_file.write("\n".join(domains) + "\n\n")
-        # Menampilkan pesan bahwa domain telah ditemukan dan hasil telah disimpan
-        print(f"{url} found {len(domains)} domain - saved!")
+        # Filter domain yang tidak diinginkan
+        exclude_keywords = ['autodiscover', 'cpanel', 'cpcalendars', 'cpcontact', 'ftp', 'mail', 'ns1', 'ns2', 'ns3', 'ns4', 'webdisk', 'webmail', 'www', 'mx1', 'mx', 'mx2']
+        domains = [domain for domain in domains if not any(keyword in domain for keyword in exclude_keywords)]
+
+        # Filter domain yang duplikat
+        domains = list(set(domains))
+
+        # Menyimpan hasil ke dalam file
+        if domains:
+            result_file.write("\n".join(domains) + "\n")
+            # Menampilkan pesan bahwa domain telah ditemukan dan hasil telah disimpan
+            print(f"{url} found {len(domains)} domain - saved!")
+        else:
+            print(f"{url} found no domains")
     else:
-        print(f"{url} found no domains")
+        print(f"{url} failed to retrieve data")
 
 # Menutup file hasil
 result_file.close()
